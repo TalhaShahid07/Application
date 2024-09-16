@@ -2,25 +2,47 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+
 class Shift(models.Model):
+    """
+    Model representing a work shift with additional location data.
+    Each shift has a defined start and end time, type, location, and description.
+    """
     SHIFT_TYPE_CHOICES = [
         ('MORNING', 'Morning'),
         ('AFTERNOON', 'Afternoon'),
         ('NIGHT', 'Night'),
     ]
     
-    # id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    shift_type = models.CharField(max_length=10, choices=SHIFT_TYPE_CHOICES)
-    description = models.TextField(blank=True, null=True)
-    created_by = models.ForeignKey(User, related_name='created_shifts', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
+    # Fields
+    name = models.CharField(max_length=100)  # Name of the shift (e.g., 'Morning Shift', 'Night Shift')
+    start_date = models.DateField(null=True)  # Start date of the shift
+    end_date = models.DateField(null=True, blank= True)  # End date of the shift
+    start_time = models.TimeField(blank = True)  # Start time of the shift
+    end_time = models.TimeField(blank = True)  # End time of the shift
+    shift_type = models.CharField(max_length=10, choices=SHIFT_TYPE_CHOICES)  # Type of shift: Morning, Afternoon, Night
+    location = models.CharField(max_length=255)  # Location where the shift takes place
+    description = models.TextField(blank=True, null=True)  # Optional description of the shift
+    created_by = models.ForeignKey(
+        User, 
+        related_name='created_shifts', 
+        on_delete=models.CASCADE
+    )  # Admin/manager who created the shift
+    created_at = models.DateTimeField(default=timezone.now)  # Timestamp of shift creation
+    updated_at = models.DateTimeField(auto_now=True)  # Automatically updated when the shift is modified
 
+    # # Additional Fields
+    # max_employees = models.PositiveIntegerField(null=True, blank=True)  # Max number of employees for the shift
+    # is_active = models.BooleanField(default=True)  # Indicates whether the shift is active
+
+    # String representation of the shift
     def __str__(self):
-        return f"{self.name} ({self.get_shift_type_display()})"
+        return f"{self.name} ({self.get_shift_type_display()}) - {self.location}"
+
+    class Meta:
+        ordering = ['start_date', 'start_time']  # Default ordering of shifts by start date and time
+        verbose_name = 'Shift'
+        verbose_name_plural = 'Shifts'
 
 
 class AssignedShift(models.Model):
@@ -37,18 +59,41 @@ class AssignedShift(models.Model):
         (NOT_CLOCKED_IN, 'Not Clocked In'),
     ]
     
-    # id = models.AutoField(primary_key=True)
+    # Fields
     create_date = models.DateTimeField(auto_now_add=True)  # Timestamp when the shift is assigned
     delete_date = models.DateTimeField(null=True, blank=True)  # When shift assignment is deleted, can be null
     update_date = models.DateTimeField(auto_now=True)  # Timestamp when the shift is updated
-    employee = models.ForeignKey(User, related_name='assigned_shifts', on_delete=models.CASCADE)  # Employee assigned the shift, and will get delete automatically if not in the list.
-    shift = models.ForeignKey(Shift, related_name='assigned_shifts', on_delete=models.CASCADE)  # The shift being assigned
-    assigned_by = models.ForeignKey(User, related_name='assigned_by', on_delete=models.CASCADE)  # Admin who assigns the shift
-    type = models.CharField(max_length=20, choices=TYPE_CHOICES, default=ASSIGNED)  # Current status of the shift assignment
+    employee = models.ForeignKey(
+        User, 
+        related_name='assigned_shifts', 
+        on_delete=models.CASCADE
+    )  # Employee assigned the shift, deleted automatically if employee is deleted.
+    shift = models.ForeignKey(
+        'Shift', 
+        related_name='assigned_shifts', 
+        on_delete=models.CASCADE
+    )  # The shift being assigned, will also be deleted if the shift itself is removed.
+    assigned_by = models.ForeignKey(
+        User, 
+        related_name='assigned_by', 
+        on_delete=models.CASCADE
+    )  # Admin or manager who assigns the shift.
+    type = models.CharField(
+        max_length=20, 
+        choices=TYPE_CHOICES, 
+        default=ASSIGNED
+    )  # Current status of the shift assignment: Assigned, Clocked In, or Not Clocked In.
 
+    # String representation of the assigned shift
     def __str__(self):
         return f"{self.employee.username} - {self.shift.name} ({self.get_type_display()})"
 
+    class Meta:
+        ordering = ['-create_date']  # Order by the most recent assignments
+        verbose_name = 'Assigned Shift'
+        verbose_name_plural = 'Assigned Shifts'
+
+#shift Attendence...
 
 class ShiftAttendance(models.Model):
 

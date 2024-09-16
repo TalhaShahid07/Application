@@ -3,7 +3,7 @@ from .models import AssignedShift, Shift, ShiftAttendance
 
 @admin.register(Shift)
 class ShiftAdmin(admin.ModelAdmin):
-    list_display = ('name', 'shift_type', 'start_time', 'end_time', 'created_by', 'created_at', 'updated_at')
+    list_display = ('name', 'shift_type', 'start_time', 'end_time', 'created_by', 'created_at', 'updated_at','location')
     search_fields = ('id', 'name','shift_type')  # which part of the filed is in the search filed.
 
 
