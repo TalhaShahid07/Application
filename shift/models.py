@@ -21,7 +21,7 @@ class Shift(models.Model):
     start_time = models.TimeField(blank = True)  # Start time of the shift
     end_time = models.TimeField(blank = True)  # End time of the shift
     shift_type = models.CharField(max_length=10, choices=SHIFT_TYPE_CHOICES)  # Type of shift: Morning, Afternoon, Night
-    location = models.CharField(max_length=255)  # Location where the shift takes place
+    location = models.IntegerField(default=1)
     description = models.TextField(blank=True, null=True)  # Optional description of the shift
     created_by = models.ForeignKey(
         User, 
