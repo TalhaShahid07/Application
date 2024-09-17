@@ -13,10 +13,6 @@ class UserRegisterView(generics.CreateAPIView):
     serializer_class = UserRegisterSerializer
 
 
-# class UserRegisterView(generics.CreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-
 # Generate access and refresh token
 class TokenObtainPairView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
