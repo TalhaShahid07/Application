@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'users',
     'shift',
     'django_filters',  # add searching functionality in the API view...
+    'manageuser',
+    
 ]
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
