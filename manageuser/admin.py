@@ -5,7 +5,7 @@ from .models import User, Location
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     list_display = ['id', 'location_name']  # Display ID and name of the location
-    search_fields = ['location_name']  # Enable search by location name
+    search_fields = ['id', 'location_name']  # Enable search by location name
 
 # Custom admin class for the User model
 @admin.register(User)
