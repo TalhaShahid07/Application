@@ -17,6 +17,6 @@ class UserAdmin(admin.ModelAdmin):
     # Fieldsets for organization in the admin interface
     fieldsets = (
         (None, {
-            'fields': ('first_name', 'last_name', 'email', 'phone_no', 'role', 'is_active', 'locations')
+            'fields': ('first_name', 'last_name', 'email', 'phone_no', 'locations', 'role',  'send_notification','is_active')
         }),
     )
