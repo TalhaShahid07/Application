@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'users',
     'shift',
     'django_filters',  # add searching functionality in the API view...
-    'manageuser',
+    # 'manageuser',
+    'manageusers'
     
 ]
 AUTHENTICATION_BACKENDS = [
@@ -109,7 +110,7 @@ WSGI_APPLICATION = 'Application.wsgi.application'
 DATABASES = {
 'default': {
 'ENGINE': 'django.db.backends.postgresql',
-'NAME': 'Application2',
+'NAME': 'manageuse',
 'USER': 'postgres',
 'PASSWORD': 'admin',
 'HOST': 'localhost',
